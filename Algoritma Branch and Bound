@@ -1,0 +1,77 @@
+n = 10
+W = 700000
+p = [79, 32, 47, 18, 26, 85, 33, 40, 45, 59]
+w = [100000, 150000, 120000, 90000, 80000, 110000, 200000, 130000, 115000, 140000]
+p_per_weight = [0.79, 0.21, 0.39, 0.20, 0.33, 0.77, 0.17, 0.31, 0.39, 0.42]
+
+nama_tempat = [
+    '1. Restoran Nusantara', '2. Sushi Samurai', '3. Pasta Palace', '4. Curry House',
+    '5. Burger Blast', '6. Thai Spice', '7. Le Bistro Francais', '8. Seoul Garden',
+    '9. La Casa Mexicana', '10. Mediterranean Delights'
+]
+
+# Sort the data based on p_per_weight in descending order
+sorted_data = sorted(zip(p, w, p_per_weight, nama_tempat), key=lambda x: x[2], reverse=True)
+
+# Filter items with p >= 30
+filtered_data = [(p, w, p_per_weight, nama) for p, w, p_per_weight, nama in sorted_data if p >= 30]
+
+n = len(filtered_data)
+p = [p for p, _, _, _ in filtered_data]
+w = [w for _, w, _, _ in filtered_data]
+nama_tempat = [nama for _, _, _, nama in filtered_data]
+
+n = 10
+W = 700000
+p = [79, 32, 47, 18, 26, 85, 33, 40, 45, 59]
+w = [100000, 150000, 120000, 90000, 80000, 110000, 200000, 130000, 115000, 140000]
+p_per_weight = [0.79, 0.21, 0.39, 0.20, 0.33, 0.77, 0.17, 0.31, 0.39, 0.42]
+
+nama_tempat = [
+    '1. Restoran Nusantara', '2. Sushi Samurai', '3. Pasta Palace', '4. Curry House',
+    '5. Burger Blast', '6. Thai Spice', '7. Le Bistro Francais', '8. Seoul Garden',
+    '9. La Casa Mexicana', '10. Mediterranean Delights'
+]
+
+# Sort the data based on p_per_weight in descending order
+sorted_data = sorted(zip(p, w, p_per_weight, nama_tempat), key=lambda x: x[2], reverse=True)
+
+# Filter items with p >= 30
+filtered_data = [(p, w, p_per_weight, nama) for p, w, p_per_weight, nama in sorted_data if p >= 30]
+
+n = len(filtered_data)
+p = [p for p, _, _, _ in filtered_data]
+w = [w for _, w, _, _ in filtered_data]
+nama_tempat = [nama for _, _, _, nama in filtered_data]
+
+def branch_and_bound(k, total_weight, total_profit, selected_items):
+    global max_profit, best_items
+
+    if total_weight <= W and total_profit > max_profit:
+        max_profit = total_profit
+        best_items = selected_items.copy()
+
+    if k < n - 1:
+        upper_bound = get_upper_bound(k, total_weight, total_profit)
+        if upper_bound >= max_profit:
+            branch_and_bound(k + 1, total_weight + w[k + 1], total_profit + p[k + 1], selected_items + [k + 1])
+            branch_and_bound(k + 1, total_weight, total_profit, selected_items)
+
+max_profit = 0
+best_items = []
+
+branch_and_bound(-1, 0, 0, [])
+
+total_w = sum(w[i] for i in best_items)
+total_p = sum(p[i] for i in best_items)
+sisa_w = W - total_w
+
+# Cetak hasil
+print("Total Weight: ", total_w)
+print("Total Profit: ", total_p)
+print("Sisa Uang   : ", sisa_w)
+
+
+print("Tempat yang sesuai dengan syarat:")
+for i in best_items:
+    print(nama_tempat[i])
